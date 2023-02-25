@@ -288,16 +288,16 @@ void MainWindow::pjreddie_style_msgBox(QMessageBox::Icon icon, QString title, QS
     font.setBold(true);
     msgBox.setFont(font);
     msgBox.button(QMessageBox::Ok)->setFont(font);
-    msgBox.button(QMessageBox::Ok)->setStyleSheet("border-style: outset; border-width: 2px; border-color: rgb(0, 255, 0); color : rgb(0, 255, 0);");
+    msgBox.button(QMessageBox::Ok)->setStyleSheet("border-style: outset; border-width: 1px; border-color: rgb(5, 7, 9); color : rgb(203, 94, 39);");
     msgBox.button(QMessageBox::Ok)->setFocusPolicy(Qt::ClickFocus);
-    msgBox.setStyleSheet("background-color : rgb(34, 0, 85); color : rgb(0, 255, 0);");
+    msgBox.setStyleSheet("background-color : rgb(30, 31, 35); color : rgb(203, 94, 39);");
 
     msgBox.exec();
 }
 
 void MainWindow::open_img_dir(bool& ret)
 {
-    pjreddie_style_msgBox(QMessageBox::Information,"Help", "Step 1. Open Your Data Set Directory");
+    // pjreddie_style_msgBox(QMessageBox::Information,"Help", "Step 1. Open Your Data Set Directory");
 
     QString opened_dir;
     if(m_imgDir.size() > 0) opened_dir = m_imgDir;
@@ -337,7 +337,7 @@ void MainWindow::open_img_dir(bool& ret)
 
 void MainWindow::open_obj_file(bool& ret)
 {
-    pjreddie_style_msgBox(QMessageBox::Information,"Help", "Step 2. Open Your Label List File(*.txt or *.names)");
+    // pjreddie_style_msgBox(QMessageBox::Information,"Help", "Step 2. Open Your Label List File(*.txt or *.names)");
 
     QString opened_dir;
     if(m_imgDir.size() > 0) opened_dir = m_imgDir;
@@ -345,7 +345,7 @@ void MainWindow::open_obj_file(bool& ret)
 
     QString fileLabelList = QFileDialog::getOpenFileName(
                 nullptr,
-                tr("Open LabelList file"),
+                tr("Open Classes file: .txt or .names"),
                 opened_dir,
                 tr("LabelList Files (*.txt *.names)"));
 
@@ -455,7 +455,7 @@ void MainWindow::init_horizontal_slider()
     ui->horizontalSlider_contrast->setRange(0, 1000);
     ui->horizontalSlider_contrast->setValue(ui->horizontalSlider_contrast->maximum()/2);
     ui->label_image->setContrastGamma(1.0);
-    ui->label_contrast->setText(QString("Contrast(%) ") + QString::number(50));
+    ui->label_contrast->setText(QString("Brightness ") + QString::number(50) + QString("%"));
 }
 
 void MainWindow::init_table_widget()
@@ -473,7 +473,7 @@ void MainWindow::on_horizontalSlider_contrast_sliderMoved(int value)
     float percentageToGamma = std::pow(1/(valueToPercentage + 0.5), 7.);
 
     ui->label_image->setContrastGamma(percentageToGamma);
-    ui->label_contrast->setText(QString("Contrast(%) ") + QString::number(int(valueToPercentage * 100.)));
+    ui->label_contrast->setText(QString("Brightness ") + QString::number(int(valueToPercentage * 100.)) + QString("%"));
 }
 
 void MainWindow::on_checkBox_visualize_class_name_clicked(bool checked)
