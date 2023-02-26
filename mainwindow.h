@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsView>
 #include <QWheelEvent>
 #include <QTableWidgetItem>
 #include <QMessageBox>
@@ -64,10 +65,11 @@ private:
     void            set_label(const int);
     void            set_label_color(const int , const QColor);
 
-    void            pjreddie_style_msgBox(QMessageBox::Icon, QString, QString);
+    void            pop_msgBox(QMessageBox::Icon, QString, QString);
 
     void            open_img_dir(bool&);
     void            open_obj_file(bool&);
+    void            open_classes_name(bool&, QString);
 
     Ui::MainWindow *ui;
 
@@ -81,7 +83,7 @@ private:
     int             m_lastLabeledImgIndex;
 
 protected:
-    void    wheelEvent(QWheelEvent *);
+    void    wheelEvent(QWheelEvent *, QGraphicsView *);
 };
 
 #endif // MAINWINDOW_H

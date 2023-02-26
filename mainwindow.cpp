@@ -1,12 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QGraphicsView>
 #include <QFileDialog>
 #include <QColorDialog>
 #include <QKeyEvent>
 #include <QDebug>
 #include <QShortcut>
 #include <QCollator>
+#include <QMouseEvent>
+#include <QApplication>
 #include <iomanip>
 #include <cmath>
 
@@ -48,27 +51,18 @@ void MainWindow::on_pushButton_open_files_clicked()
 
     if (!bRetImgDir) return ;
 
+    // loading automatically after choosing a folder
+    /*
     if (m_objList.empty())
     {
         bool bRetObjFile    = false;
         open_obj_file(bRetObjFile);
         if (!bRetObjFile) return ;
     }
+    */
 
     init();
 }
-
-//void MainWindow::on_pushButton_change_dir_clicked()
-//{
-//    bool bRetImgDir     = false;
-
-//    open_img_dir(bRetImgDir);
-
-//    if (!bRetImgDir) return ;
-
-//    init();
-//}
-
 
 void MainWindow::init()
 {
@@ -193,7 +187,7 @@ void MainWindow::remove_img()
 
         if(m_imgList.size() == 0)
         {
-            pjreddie_style_msgBox(QMessageBox::Information,"End", "In directory, there are not any image. program quit.");
+            pop_msgBox(QMessageBox::Information,"End", "In directory, there are not any image. program quit.");
             QCoreApplication::quit();
         }
         else if( m_imgIndex == m_imgList.size())
@@ -280,24 +274,24 @@ void MainWindow::set_label_color(const int index, const QColor color)
     ui->label_image->m_drawObjectBoxColor.replace(index, color);
 }
 
-void MainWindow::pjreddie_style_msgBox(QMessageBox::Icon icon, QString title, QString content)
+void MainWindow::pop_msgBox(QMessageBox::Icon icon, QString title, QString content)
 {
     QMessageBox msgBox(icon, title, content, QMessageBox::Ok);
 
     QFont font;
-    font.setBold(true);
+    font.setBold(false);
     msgBox.setFont(font);
+    //msgBox.setWindowFlags(Qt::FramelessWindowHint |Qt::WindowStaysOnTopHint);
+    //msgBox.setStyleSheet("background-color : rgb(240, 242, 245; color : rgb(250, 252, 255);");
     msgBox.button(QMessageBox::Ok)->setFont(font);
-    msgBox.button(QMessageBox::Ok)->setStyleSheet("border-style: outset; border-width: 1px; border-color: rgb(5, 7, 9); color : rgb(203, 94, 39);");
     msgBox.button(QMessageBox::Ok)->setFocusPolicy(Qt::ClickFocus);
-    msgBox.setStyleSheet("background-color : rgb(30, 31, 35); color : rgb(203, 94, 39);");
-
+    //msgBox.button(QMessageBox::Ok)->setStyleSheet("border-style: outset; border-width: 1px; border-color: rgb(5, 7, 9); color : rgb(203, 94, 39);");
     msgBox.exec();
 }
 
 void MainWindow::open_img_dir(bool& ret)
 {
-    // pjreddie_style_msgBox(QMessageBox::Information,"Help", "Step 1. Open Your Data Set Directory");
+    // pop_msgBox(QMessageBox::Information,"Help", "<p align='center'>Step 1:<br>Open Your Data Set Directory</p>");
 
     QString opened_dir;
     if(m_imgDir.size() > 0) opened_dir = m_imgDir;
@@ -322,7 +316,7 @@ void MainWindow::open_img_dir(bool& ret)
     if(fileList.empty())
     {
         ret = false;
-        pjreddie_style_msgBox(QMessageBox::Critical,"Error", "This folder is empty");
+        pop_msgBox(QMessageBox::Critical,"Error", "This folder is empty");
     }
     else
     {
@@ -333,11 +327,18 @@ void MainWindow::open_img_dir(bool& ret)
         for(QString& str: m_imgList)
             str = m_imgDir + "/" + str;
     }
+
+    if (m_objList.empty())
+    {
+        bool bRetObjFile    = false;
+        open_classes_name(bRetObjFile, imgDir);
+        if (!bRetObjFile) return ;
+    }
 }
 
 void MainWindow::open_obj_file(bool& ret)
 {
-    // pjreddie_style_msgBox(QMessageBox::Information,"Help", "Step 2. Open Your Label List File(*.txt or *.names)");
+    pop_msgBox(QMessageBox::Information,"Help", "<p align='center'>Step 2:<br>Open Your Label List File(*.txt or *.names)</p>");
 
     QString opened_dir;
     if(m_imgDir.size() > 0) opened_dir = m_imgDir;
@@ -352,7 +353,7 @@ void MainWindow::open_obj_file(bool& ret)
     if(fileLabelList.size() == 0)
     {
         ret = false;
-        pjreddie_style_msgBox(QMessageBox::Critical,"Error", "LabelList file is not opened()");
+        pop_msgBox(QMessageBox::Critical,"Error", "LabelList file is not opened()");
     }
     else
     {
@@ -361,12 +362,45 @@ void MainWindow::open_obj_file(bool& ret)
     }
 }
 
-void MainWindow::wheelEvent(QWheelEvent *ev)
+void MainWindow::open_classes_name(bool& ret, QString classes_dir)
 {
+    QString fileLabelList = classes_dir+"/classes.names";
+
+    if(fileLabelList.size() == 0)
+    {
+        ret = false;
+        pop_msgBox(QMessageBox::Critical,"Error", "classes.name file is not opened()");
+    }
+    else
+    {
+        ret = true;
+        load_label_list_data(fileLabelList);
+    }
+}
+
+void MainWindow::wheelEvent(QWheelEvent *ev, QGraphicsView *view)
+{
+    /*
+        const ViewportAnchor anchor = transformationAnchor;
+        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
+        qreal factor;
+        if (ev->angleDelta().y() > 0) {
+            factor = 1.1;
+        } else if(ev->angleDelta().y() <0) {
+            factor = 0.9;
+        }
+
+        scale(factor, factor);
+        setTransformationAnchor(anchor);
+    */
+
+    /*
     if(ev->angleDelta().y() > 0) // up Wheel
         prev_img();
     else if(ev->angleDelta().y() < 0) //down Wheel
         next_img();
+    */
 }
 
 void MainWindow::on_pushButton_prev_clicked()
