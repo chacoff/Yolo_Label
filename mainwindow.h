@@ -83,7 +83,8 @@ private:
     int             m_lastLabeledImgIndex;
 
 protected:
-    void    wheelEvent(QWheelEvent *, QGraphicsView *);
+    //void    wheelEvent(QWheelEvent *, QGraphicsView *) override;
+    void wheelEvent(QWheelEvent *event)  override;
 };
 
 #endif // MAINWINDOW_H

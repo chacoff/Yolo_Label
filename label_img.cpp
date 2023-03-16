@@ -7,7 +7,8 @@
 
 using std::ifstream;
 
-QColor label_img::BOX_COLORS[10] ={  Qt::green,
+QColor label_img::BOX_COLORS[10] ={
+        Qt::green,
         Qt::darkGreen,
         Qt::blue,
         Qt::darkBlue,

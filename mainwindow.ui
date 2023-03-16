@@ -32,7 +32,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>YoloLabel fork 0.1</string>
+   <string>YoloLabel fork v0.2 - RDEsch</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>

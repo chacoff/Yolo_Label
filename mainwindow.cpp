@@ -224,13 +224,17 @@ void MainWindow::load_label_list_data(QString qstrLabelListFile)
         ui->label_image->m_drawObjectBoxColor.clear();
 
         string strLabel;
-        int fileIndex = 0;
+        //int fileIndex = 0;
         while(getline(inputLabelListFile, strLabel))
         {
             int nRow = ui->tableWidget_label->rowCount();
   
-            QString qstrLabel   = QString().fromStdString(strLabel);
-            QColor  labelColor  = label_img::BOX_COLORS[(fileIndex++)%10];
+            auto fields = QString::fromStdString(strLabel).split(',');
+            auto qstrLabel = fields.first();
+            //QString qstrLabel   = QString().fromStdString(strLabel);
+            auto channels = fields[1].split(';');
+            QColor labelColor(channels[0].toInt(), channels[1].toInt(), channels[2].toInt());
+            //QColor  labelColor  = label_img::BOX_COLORS[(fileIndex++)%10];
             m_objList << qstrLabel;
 
             ui->tableWidget_label->insertRow(nRow);
@@ -378,29 +382,14 @@ void MainWindow::open_classes_name(bool& ret, QString classes_dir)
     }
 }
 
-void MainWindow::wheelEvent(QWheelEvent *ev, QGraphicsView *view)
+void MainWindow::wheelEvent(QWheelEvent *event)
 {
-    /*
-        const ViewportAnchor anchor = transformationAnchor;
-        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-
-        qreal factor;
-        if (ev->angleDelta().y() > 0) {
-            factor = 1.1;
-        } else if(ev->angleDelta().y() <0) {
-            factor = 0.9;
-        }
-
-        scale(factor, factor);
-        setTransformationAnchor(anchor);
-    */
-
-    /*
-    if(ev->angleDelta().y() > 0) // up Wheel
+    if(event->angleDelta().y() > 0) // up Wheel
         prev_img();
-    else if(ev->angleDelta().y() < 0) //down Wheel
+    else if(event->angleDelta().y() < 0) //down Wheel
         next_img();
-    */
+
+    event->accept();
 }
 
 void MainWindow::on_pushButton_prev_clicked()
@@ -445,18 +434,23 @@ void MainWindow::keyPressEvent(QKeyEvent * event)
 //    remove_img();
 //}
 
+
 void MainWindow::on_tableWidget_label_cellDoubleClicked(int row, int column)
 {
     bool bColorAttributeClicked = (column == 1);
 
     if(bColorAttributeClicked)
     {
-        QColor color = QColorDialog::getColor(Qt::white,nullptr,"Set Label Color");
+        /*
+        auto color = QColorDialog::getColor(Qt::white,nullptr,"Set Label Color");
+
         if(color.isValid())
         {
             set_label_color(row, color);
             ui->tableWidget_label->item(row, 1)->setBackground(color);
         }
+        */
+
         set_label(row);
         ui->label_image->showImage();
     }
@@ -466,6 +460,7 @@ void MainWindow::on_tableWidget_label_cellClicked(int row, int column)
 {
     set_label(row);
 }
+
 
 void MainWindow::on_horizontalSlider_images_sliderMoved(int position)
 {
